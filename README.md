@@ -1,9 +1,6 @@
-In this branch, you need to learn; 
-* in PostServiceImpl, define 2 private methods.
-   * mapToEntity
-   * mapToDTO
-* add package exception
-  * ResourceNotFoundException
-* add RUD operations in service layer and controller layer.
+In this branch,
+* create util package and under this package create AppConstants class
+* in PostController and PostService, remove old getAllPosts();
+* add pageable getAllPosts()
 
-**User Postman to call each API to check the response.**
+**Practice pageable Api**
