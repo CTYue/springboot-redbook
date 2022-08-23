@@ -6,4 +6,4 @@ In this branch, you need to learn;
   * ResourceNotFoundException
 * add RUD operations in service layer and controller layer.
 
-**User Postman to call each API to check the response.**
+**Use Postman to call each API to check the response.**

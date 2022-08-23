@@ -14,13 +14,13 @@ import java.util.List;
  * @date 8/22/22 7:14 PM
  */
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/posts")
 public class PostController {
 
     @Autowired
     private PostService postService;
 
-    @PostMapping("/posts")
+    @PostMapping
     public ResponseEntity<PostDto> createPost(@RequestBody PostDto postDto) {
         PostDto postResponse = postService.createPost(postDto);
         return new ResponseEntity<>(postResponse, HttpStatus.CREATED);
