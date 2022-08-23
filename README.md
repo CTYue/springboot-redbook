@@ -1,6 +1,5 @@
 In this branch,
-* create util package and under this package create AppConstants class
-* in PostController and PostService, remove old getAllPosts();
-* add pageable getAllPosts()
+* add BlogAPIException in package exception
+* add all comment related codes in different layer
 
-**Practice pageable Api**
+**practice the new apis**
