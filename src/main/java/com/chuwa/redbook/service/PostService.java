@@ -1,7 +1,6 @@
 package com.chuwa.redbook.service;
 
 import com.chuwa.redbook.payload.PostDto;
-import com.chuwa.redbook.payload.PostResponse;
 
 import java.util.List;
 
