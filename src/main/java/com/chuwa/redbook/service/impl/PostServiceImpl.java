@@ -109,6 +109,30 @@ public class PostServiceImpl implements PostService {
         return postJPQLRepository.getAllPostWithJPQL().stream().map(post -> mapToDTO(post)).collect(Collectors.toList());
     }
 
+    @Override
+    public PostDto getPostByIdJPQLIndexParameter(Long id, String title) {
+        Post post = postRepository.getPostByIDOrTitleWithJPQLIndexParameters(id, title);
+        return mapToDTO(post);
+    }
+
+    @Override
+    public PostDto getPostByIdJPQLNamedParameter(Long id, String title) {
+        Post post = postRepository.getPostByIDOrTitleWithJPQLNamedParameters(id, title);
+        return mapToDTO(post);
+    }
+
+    @Override
+    public PostDto getPostByIdSQLIndexParameter(Long id, String title) {
+        Post post = postRepository.getPostByIDOrTitleWithSQLIndexParameters(id, title);
+        return mapToDTO(post);
+    }
+
+    @Override
+    public PostDto getPostByIdSQLNamedParameter(Long id, String title) {
+        Post post = postRepository.getPostByIDOrTitleWithSQLNamedParameters(id, title);
+        return mapToDTO(post);
+    }
+
     private PostDto mapToDTO(Post post) {
         PostDto postDto = new PostDto();
         postDto.setId(post.getId());

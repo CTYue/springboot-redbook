@@ -1,6 +1,7 @@
 package com.chuwa.redbook.dao;
 
 import com.chuwa.redbook.entity.Post;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
