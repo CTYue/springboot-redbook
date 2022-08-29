@@ -23,7 +23,7 @@ public class PostJPQLRepositoryImpl implements PostJPQLRepository {
 
     @Override
     public List<Post> getAllPostWithJPQL() {
-        TypedQuery<Post> posts = entityManager.createNamedQuery("get_all_posts", Post.class);
+        TypedQuery<Post> posts = entityManager.createNamedQuery("Post.getAll", Post.class);
         return posts.getResultList();
     }
 

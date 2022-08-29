@@ -10,3 +10,4 @@ JPQL & SQL:
 entityManager Code:
 * source code: com.chuwa.redbook.dao.impl.PostJPQLRepositoryImpl
 * test code: com.chuwa.redbook.dao.impl.PostJPQLRepositoryImplTest
+  * session
