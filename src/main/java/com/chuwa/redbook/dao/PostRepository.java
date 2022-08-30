@@ -26,7 +26,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     /**
      * JPQL
      * use Entity name other than database table name.
-     * index Parameters
+     * named Parameters
      * @return post
      */
     @Query("select p from Post p where p.id = :key or p.title = :title")
@@ -39,7 +39,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
      * index Parameters
      * @return post
      */
-    @Query(value = "select * from posts p where p.id = ?1 or p.title = ?2", nativeQuery = true)
+    @Query(value = "select * from posts p where p.id = ?1 or p.title = ?2 p.update_date_time", nativeQuery = true)
     Post getPostByIDOrTitleWithSQLIndexParameters(Long id, String title);
 
     /**
