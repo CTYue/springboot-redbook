@@ -9,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -19,30 +20,13 @@ import java.util.Map;
  * @date 6/26/22 9:43 AM
  */
 @ControllerAdvice
-public class GlobalExceptionHandler {
-    /**
-     * Approach 1
-     */
-//    @Override
-//    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-//                                                                  HttpHeaders headers,
-//                                                                  HttpStatus status,
-//                                                                  WebRequest request) {
-//        Map<String, String> errors = new HashMap<>();
-//        ex.getBindingResult().getAllErrors().forEach((error) -> {
-//            String fieldName = ((FieldError) error).getField();
-//            String message = error.getDefaultMessage();
-//            errors.put(fieldName, message);
-//        });
-//        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
-//    }
-
-
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     /**
-     * Approach 2
+     * Validation,
+     * if invalid, then throw back exceptions/errors
      */
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                   HttpHeaders headers,
                                                                   HttpStatus status,
