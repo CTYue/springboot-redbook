@@ -1,5 +1,7 @@
 package com.chuwa.redbook.payload;
 
+import java.util.Set;
+
 /**
  * @author b1go
  * @date 8/22/22 6:52 PM
@@ -9,6 +11,8 @@ public class PostDto {
     private String title;
     private String description;
     private String content;
+
+    private Set<CommentDto> comments;
 
     public PostDto() {
     }
@@ -50,6 +54,14 @@ public class PostDto {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public Set<CommentDto> getComments() {
+        return comments;
+    }
+
+    public void setComments(Set<CommentDto> comments) {
+        this.comments = comments;
     }
 
     @Override
