@@ -1,5 +1,9 @@
 package com.chuwa.redbook.payload;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
+
 /**
  * @author b1go
  * @date 6/23/22 11:10 PM
@@ -7,8 +11,16 @@ package com.chuwa.redbook.payload;
 public class CommentDto {
 
     private long id;
+
+    @NotEmpty(message = "Name should not be null or empty")
     private String name;
+
+    @NotEmpty(message = "Email should not be null or empty")
+    @Email
     private String email;
+
+    @NotEmpty
+    @Size(min = 5, message = "Comment body must be minimum 5 characters")
     private String body;
 
     public CommentDto() {
