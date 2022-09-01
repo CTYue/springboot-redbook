@@ -25,6 +25,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     /**
      * Validation,
      * if invalid, then throw back exceptions/errors
+     * 1. payload -> Rule
+     * 2. @Valid -> where apply Rule, if, invalid, throw exception
+     * 3. global exception -> accept and handle
      */
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
