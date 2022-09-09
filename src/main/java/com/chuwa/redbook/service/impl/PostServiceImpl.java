@@ -7,6 +7,8 @@ import com.chuwa.redbook.payload.PostDto;
 import com.chuwa.redbook.payload.PostResponse;
 import com.chuwa.redbook.service.PostService;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,6 +24,8 @@ import java.util.stream.Collectors;
  */
 @Service
 public class PostServiceImpl implements PostService {
+
+    private static final Logger logger = LoggerFactory.getLogger(PostServiceImpl.class);
 
     @Autowired
     private PostRepository postRepository;
@@ -99,20 +103,25 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostResponse getAllPost(int pageNo, int pageSize, String sortBy, String sortDir) {
 
+        logger.info("service getAllPost with pageable are called");
+        logger.info("creating a sort object");
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
 
         // create pageable instance
-
+        logger.info("creating a PageRequest object");
         PageRequest pageRequest = PageRequest.of(pageNo, pageSize, sort);
 //        PageRequest pageRequest = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
 //        PageRequest pageRequest = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
+        logger.info("calling postRepository to get the data from database");
         Page<Post> pagePosts = postRepository.findAll(pageRequest);
 
         // get content for page abject
+        logger.info("Fetching data successfully and converting data to Dtos");
         List<Post> posts = pagePosts.getContent();
         List<PostDto> postDtos = posts.stream().map(post -> modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
 
+        logger.info("adding meta data to the response");
         PostResponse postResponse = new PostResponse();
         postResponse.setContent(postDtos);
         postResponse.setPageNo(pagePosts.getNumber());
