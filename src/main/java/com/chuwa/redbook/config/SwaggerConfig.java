@@ -28,8 +28,8 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfo(
-                "Chuwa Blog REST APIs",
-                "Chuwa Blog REST API Documentation",
+                "RedBook REST APIs",
+                "RedBook REST API Documentation",
                 "1",
                 "Terms of service",
                 new Contact("Chuwa", "www.chuwaamerica.com", "contactus@chuwaamerica.com"),

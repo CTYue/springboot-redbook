@@ -58,8 +58,19 @@ public class SecurityDBJWTConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST,"/api/v1/**").hasRole("ADMIN")
-                .anyRequest()
-                .authenticated();
+                .and()
+                .authorizeRequests((authorize) -> authorize
+                        .antMatchers("/api/v1/auth/**").permitAll()
+                        .antMatchers(HttpMethod.GET, "/api/v1/**").permitAll()
+                        .antMatchers(HttpMethod.POST,"/api/v1/**").hasRole("ADMIN")
+                        .antMatchers("/v2/api-docs/**").permitAll()
+                        .antMatchers("/swagger-ui/**").permitAll()
+                        .antMatchers("/swagger-resources/**").permitAll()
+                        .antMatchers("/swagger-ui.html").permitAll()
+                        .antMatchers("/webjars/**").permitAll()
+                        .anyRequest()
+                        .authenticated()
+                );
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
