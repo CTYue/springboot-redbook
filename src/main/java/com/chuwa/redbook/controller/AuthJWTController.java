@@ -63,9 +63,11 @@ public class AuthJWTController {
 
         // get token from tokenProvider
         String token = tokenProvider.generateToken(authentication);
+        JWTAuthResponse jwtAuthResponse = new JWTAuthResponse(token);
+        jwtAuthResponse.setTokenType("JWT");
 
         logger.info(loginDto.getAccountOrEmail() + "sign in successfully");
-        return ResponseEntity.ok(new JWTAuthResponse(token));
+        return ResponseEntity.ok(jwtAuthResponse);
     }
 
     @PostMapping("/signup")
@@ -89,7 +91,13 @@ public class AuthJWTController {
         user.setEmail(signUpDto.getEmail());
         user.setPassword(passwordEncoder.encode(signUpDto.getPassword()));
 
-        Role roles = roleRepository.findByName("ROLE_ADMIN").get();
+        Role roles = null;
+        if (signUpDto.getAccount().contains("chuwa")) {
+            roles = roleRepository.findByName("ROLE_ADMIN").get();
+        } else {
+            roles = roleRepository.findByName("ROLE_USER").get();
+        }
+
         user.setRoles(Collections.singleton(roles));
         userRepository.save(user);
 
