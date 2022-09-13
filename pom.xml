@@ -96,6 +96,12 @@
 			<artifactId>hutool-all</artifactId>
 			<version>5.8.4</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui -->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>3.0.0</version>
+		</dependency>
 
 	</dependencies>
 
