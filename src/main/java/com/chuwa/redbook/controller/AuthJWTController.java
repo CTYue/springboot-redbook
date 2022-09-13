@@ -53,7 +53,7 @@ public class AuthJWTController {
 
     @PostMapping("/signin")
     public ResponseEntity<JWTAuthResponse> authenticateUser(@RequestBody LoginDto loginDto) {
-        logger.info(loginDto.getAccountOrEmail() + "is trying to sign in our application");
+        logger.info(loginDto.getAccountOrEmail() + " is trying to sign in our application");
 
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 loginDto.getAccountOrEmail(), loginDto.getPassword()
@@ -66,7 +66,7 @@ public class AuthJWTController {
         JWTAuthResponse jwtAuthResponse = new JWTAuthResponse(token);
         jwtAuthResponse.setTokenType("JWT");
 
-        logger.info(loginDto.getAccountOrEmail() + "sign in successfully");
+        logger.info(loginDto.getAccountOrEmail() + " sign in successfully");
         return ResponseEntity.ok(jwtAuthResponse);
     }
 
