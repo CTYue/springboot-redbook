@@ -54,8 +54,10 @@ public class SecurityDBJWTConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/api/**").permitAll()
-                .antMatchers("/api/auth/**").permitAll()
+                .antMatchers("/api/v1/auth/**").permitAll()
+                .and()
+                .authorizeRequests()
+                .antMatchers(HttpMethod.POST,"/api/v1/**").hasRole("ADMIN")
                 .anyRequest()
                 .authenticated();
 
