@@ -36,7 +36,6 @@ public class PostServiceImpl implements PostService {
     public PostDto createPost(PostDto postDto) {
 
         // covert DTO to Entity
-//        Post post = mapToEntity(postDto);
         Post post = modelMapper.map(postDto, Post.class);
 
         // 调用Dao的save 方法，将entity的数据存储到数据库MySQL
@@ -67,11 +66,6 @@ public class PostServiceImpl implements PostService {
      */
     @Override
     public PostDto getPostById(long id) {
-//        Optional<Post> post = postRepository.findById(id);
-//        post.orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
-
-//        Post post = postRepository.findById(id).get();
-
         Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
 
         return modelMapper.map(post, PostDto.class);
@@ -105,8 +99,6 @@ public class PostServiceImpl implements PostService {
         // create pageable instance
 
         PageRequest pageRequest = PageRequest.of(pageNo, pageSize, sort);
-//        PageRequest pageRequest = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
-//        PageRequest pageRequest = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
         Page<Post> pagePosts = postRepository.findAll(pageRequest);
 
         // get content for page abject
