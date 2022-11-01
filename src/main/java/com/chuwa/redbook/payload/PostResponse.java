@@ -1,17 +1,23 @@
 package com.chuwa.redbook.payload;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import java.util.List;
 
 /**
  * @author b1go
  * @date 6/22/22 2:15 AM
  */
+@JsonPropertyOrder({ "last", "pageNo", "pageSize", "totalElements", "totalPages", "content" })
 public class PostResponse {
     private List<PostDto> content;
     private int pageNo;
     private int pageSize;
     private long totalElements;
     private int totalPages;
+
+    @JsonProperty("isLast")
     private boolean last;
 
     public PostResponse() {
