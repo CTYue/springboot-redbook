@@ -1,3 +1,4 @@
+
 # springboot-redbook `branch 04_comment`#
 
 In this branch, we add a new table `comments` which has a one to many relationshep with the `posts` table.
@@ -6,6 +7,7 @@ In this branch, we add a new table `comments` which has a one to many relationsh
 \
 
 \
+
 > ## In pakage `entity`, we added `Comment.java` where we declare how the table should look like and what is the relationship with posts.
 At this file, we start with adding two annotation just like the `posts`, then we listed out all the columns the table should have. The only different is `Post` as foreign object from anther table, we named it "post_id" and `hibernate` will help take case with the rest and only show its id in the table, but  we need to notice that when we got a row of `comment` from the table in the server, we are actually getting the actual object of a post along with the comment(ManyToOne relationship, each comment has to correspond to a post).
 ```
@@ -69,5 +71,7 @@ Here we pass `pageNo=0` and `pageSize=2` as request parameters. This will be use
     }
 ```
 
+======
+Other than this two files, we also need to add a new file to all the other pakege in order to completed the APIs for the `comments` table. And add BlogAPIException in package exception
 
-Other than this two files, we also need to add a new file to all the other pakege in order to completed the APIs for the `comments` table.
+
