@@ -8,3 +8,7 @@ type Post{
     description: String
     content: String
 }
+
+type Mutation{
+    createPost(title:String!, description:String!, content:String!) : Post!
+}
