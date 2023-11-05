@@ -9,7 +9,7 @@ import org.springframework.stereotype.Controller;
 
 @Controller
 public class PostGraphQLController {
-    private final PostService postService;
+    private PostService postService;
 
     public PostGraphQLController(PostService postService) {
         this.postService = postService;
