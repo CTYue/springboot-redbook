@@ -7,6 +7,8 @@ import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
+import java.util.List;
+
 @Controller
 public class PostGraphQLController {
     private PostService postService;
@@ -18,6 +20,11 @@ public class PostGraphQLController {
     @QueryMapping
     public PostDto postById(@Argument Long id){
         return postService.getPostById(id);
+    }
+
+    @QueryMapping
+    public List<PostDto> getAllPosts(){
+        return this.postService.getAllPost();
     }
 
     @MutationMapping
