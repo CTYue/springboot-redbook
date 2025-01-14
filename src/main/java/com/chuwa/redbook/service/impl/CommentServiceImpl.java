@@ -117,4 +117,9 @@ public class CommentServiceImpl implements CommentService {
 
         commentRepository.delete(comment);
     }
+
+    public static CommentDto commentServiceMapperUtil(Comment comment) {
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(comment, CommentDto.class);
+    }
 }
