@@ -25,6 +25,10 @@ public class PostController {
 
     Logger logger = org.slf4j.LoggerFactory.getLogger(PostController.class);
 
+    @GetMapping("/healthy")
+    public ResponseEntity isHealthy() {
+        return new ResponseEntity<>("I am healthy", HttpStatus.OK);
+    }
 
     @PostMapping()
     public ResponseEntity<PostDto> createPost(@RequestBody PostDto postDto) {
