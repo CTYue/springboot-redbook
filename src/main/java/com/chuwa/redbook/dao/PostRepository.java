@@ -12,3 +12,5 @@ import org.springframework.stereotype.Repository;
 public interface PostRepository extends JpaRepository<Post, Long> {
     // No need to write code
 }
+
+
