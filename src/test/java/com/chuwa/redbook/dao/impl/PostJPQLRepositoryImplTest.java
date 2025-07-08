@@ -25,7 +25,7 @@ class PostJPQLRepositoryImplTest {
     @Autowired
     private PostJPQLRepositoryImpl repository;
 
-    private Post post = new Post(null, "title test", "decription test", "content test",
+    private Post post = new Post(null, "chuwa 6.9 test tile", "today is July 7 2025", "hello chuwa",
             null, null);
 
     @Test

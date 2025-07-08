@@ -5,10 +5,10 @@
 <hibernate-configuration>
     <session-factory>
         <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
-        <property name="hibernate.connection.username">springstudent</property>
-        <property name="hibernate.connection.password">springstudent</property>
-        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/redbook</property>
-        <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+        <property name="hibernate.connection.username">chuwa</property>
+        <property name="hibernate.connection.password">chuwa</property>
+        <property name="hibernate.connection.url">jdbc:mysql://192.168.5.13:3306/redbook?useSSL=false</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</property>
         <property name="current_session_context_class">thread</property>
         <property name="hibernate.show_sql">true</property>
         <mapping class="com.chuwa.redbook.entity.Post"></mapping>
