@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -19,11 +21,14 @@ import java.util.List;
 @RequestMapping("/api/v1/posts")
 public class PostController {
 
+    private static final Logger logger = LoggerFactory.getLogger(PostController.class);
+
     @Autowired
     private PostService postService;
 
     @PostMapping()
     public ResponseEntity<PostDto> createPost(@RequestBody PostDto postDto) {
+        logger.info("Creating post with title: {}", postDto.getTitle());
         PostDto postResponse = postService.createPost(postDto);
         return new ResponseEntity<>(postResponse, HttpStatus.CREATED);
     }
@@ -45,12 +50,14 @@ public class PostController {
 
     @PutMapping("/{id}")
     public ResponseEntity<PostDto> updatePostById(@RequestBody PostDto postDto, @PathVariable(name = "id") long id) {
+        logger.debug("Updating post with id: {}, title: {}", id, postDto.getTitle());
         PostDto postResponse = postService.updatePost(postDto, id);
         return new ResponseEntity<>(postResponse, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletePost(@PathVariable(name = "id") long id) {
+        logger.warn("Deleting post with id: {}", id);
         postService.deletePostById(id);
         return new ResponseEntity<>("Post entity deleted successfully.", HttpStatus.OK);
     }
