@@ -6,7 +6,8 @@ import com.chuwa.redbook.dao.PostRepository;
 import com.chuwa.redbook.entity.Post;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,9 +20,10 @@ import java.util.concurrent.TimeUnit;
  * @author b1go
  * @date 3/2/23 10:38 PM
  */
-@Slf4j
 @Component
 public class ReportHandler {
+
+    Logger log = LoggerFactory.getLogger(ReportHandler.class);
 
     @Autowired
     CommentRepository commentRepository;
