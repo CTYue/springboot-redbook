@@ -32,7 +32,7 @@ public class PostController {
 
     @GetMapping("/liveness")
     public ResponseEntity isLive() {
-        return new ResponseEntity<>("I am live", HttpStatus.OK);
+        return new ResponseEntity<>("Readbook application is live", HttpStatus.OK);
     }
 
     @PostMapping()
