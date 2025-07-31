@@ -25,6 +25,10 @@ public class PostServiceImpl implements PostService {
     @Autowired
     private PostRepository postRepository;
 
+    public PostDto isReady() {
+        return postRepository.findAll(PageRequest.of(0, 1)).hasContent() ? mapToDTO(postRepository.findAll(PageRequest.of(0, 1)).getContent().get(0)) : null;
+    }
+
     @Override
     public PostDto createPost(PostDto postDto) {
         // 把payload转换成entity，这样才能dao去把该数据存到数据库中。
