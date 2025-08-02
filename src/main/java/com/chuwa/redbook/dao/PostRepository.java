@@ -1,16 +1,14 @@
 package com.chuwa.redbook.dao;
 
 import com.chuwa.redbook.entity.Post;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.r2dbc.repository.Query; // ✅ Correct R2DBC Query annotation
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Mono; // Use Mono for a single result
 
-/**
- * @author b1go
- * @date 8/22/22 6:48 PM
- */
 @Repository
-public interface PostRepository extends JpaRepository<Post, Long> {
-    // No need to write code
+public interface PostRepository extends ReactiveCrudRepository<Post, Long> {
+
+    @Query("SELECT * FROM posts LIMIT 1") // ✅ Match your table name (posts)
+    Mono<Post> findFirstPost();
 }
-
-

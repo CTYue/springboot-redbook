@@ -11,7 +11,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
+import java.net.http.HttpClient;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,13 +30,24 @@ public class PostServiceImpl implements PostService {
     @Autowired
     private PostRepository postRepository;
 
-    public PostDto isReady() {
-        return postRepository.findAll(PageRequest.of(0, 1)).hasContent() ? mapToDTO(postRepository.findAll(PageRequest.of(0, 1)).getContent().get(0)) : null;
+    //RestTemplate, HttpClient
+//    HttpClient httpClient = HttpClient.newHttpClient();
+//    RestTemplate restTemplate = new RestTemplate();
+    WebClient webClient = WebClient.create("http://localhost:8080");
+
+    public Mono<PostDto> isReady() {
+        try {
+            Thread.sleep(10000);//Call third party API
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+//        doSomethingInSynchronousBlockingMode();
+        return postRepository.findAll().next().map(this::mapToDTO);
     }
 
-    @Override
-    public PostDto createPost(PostDto postDto) {
-        // 把payload转换成entity，这样才能dao去把该数据存到数据库中。
+//    @Override
+//    public PostDto createPost(PostDto postDto) {
+//        // 把payload转换成entity，这样才能dao去把该数据存到数据库中。
 //        Post post = new Post();
 //        if (postDto.getTitle() != null) {
 //            post.setTitle(postDto.getTitle());
@@ -40,100 +56,92 @@ public class PostServiceImpl implements PostService {
 //        }
 //        post.setDescription(postDto.getDescription());
 //        post.setContent(postDto.getContent());
-        // 此时已成功把request body的信息传递给entity
-
-        // covert DTO to Entity
-        Post post = mapToEntity(postDto);
-
-        // 调用Dao的save 方法，将entity的数据存储到数据库MySQL
-        // save()会返回存储在数据库中的数据
-        Post savedPost = postRepository.save(post);
-
-        // 将save() 返回的数据转换成controller/前端 需要的数据，然后return给controller
-//        PostDto postResponse = new PostDto();
-//        postResponse.setId(savedPost.getId());
-//        postResponse.setTitle(savedPost.getTitle());
-//        postResponse.setDescription(savedPost.getDescription());
-//        postResponse.setContent(savedPost.getContent());
-
-        PostDto postResponse = mapToDTO(savedPost);
-
-        return postResponse;
-    }
+//        // 此时已成功把request body的信息传递给entity
+//
+//        // covert DTO to Entity
+//        post = mapToEntity(postDto);
+//
+//        // 调用Dao的save 方法，将entity的数据存储到数据库MySQL
+//        // save()会返回存储在数据库中的数据
+//        Mono<Post> savedPost = postRepository.save(post);
+//
+//        // 将save() 返回的数据转换成controller/前端 需要的数据，然后return给controller
+//
+//        return mapToDTO(savedPost.block());
+//    }
 
     /**
      * 此处练习了lambda， stream API
      * @return
      */
-    @Override
-    public List<PostDto> getAllPost() {
-        List<Post> posts = postRepository.findAll();
-        List<PostDto> postDtos = posts.stream().map(post -> mapToDTO(post)).collect(Collectors.toList());
-        return postDtos;
-    }
+//    @Override
+//    public Flux<PostDto> getAllPost() {
+//         return postRepository.findAll().map(post -> mapToDTO(post)).(System.out::println);
+//    }
 
-    /**
-     * 此处顺便练习Optional
-     * @param id
-     * @return
-     */
-    @Override
-    public PostDto getPostById(long id) {
-//        Optional<Post> post = postRepository.findById(id);
-//        post.orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
+//    /**
+//     * 此处顺便练习Optional
+//     * @param id
+//     * @return
+//     */
+//    @Override
+//    public PostDto getPostById(long id) {
+////        Optional<Post> post = postRepository.findById(id);
+////        post.orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
+//
+////        Post post = postRepository.findById(id).get();
+//
+//        Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
+//
+//        return mapToDTO(post);
+//    }
 
-//        Post post = postRepository.findById(id).get();
+//    @Override
+//    public PostDto updatePost(PostDto postDto, long id) {
+//        //  Question, why do we need to find it out firstly?
+//        Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
+//        post.setTitle(postDto.getTitle());
+//        post.setDescription(postDto.getDescription());
+//        post.setContent(postDto.getContent());
+//
+//        Post updatePost = postRepository.save(post);
+//        return mapToDTO(updatePost);
+//    }
 
-        Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
+//    @Override
+//    public void deletePostById(long id) {
+//        //  Question, why do we need to find it out firstly?
+//        Post post = postRepository.findById(id).switchIfEmpty();
+//                orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
+//        postRepository.delete(post);
+//    }
 
-        return mapToDTO(post);
-    }
-
-    @Override
-    public PostDto updatePost(PostDto postDto, long id) {
-        //  Question, why do we need to find it out firstly?
-        Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
-        post.setTitle(postDto.getTitle());
-        post.setDescription(postDto.getDescription());
-        post.setContent(postDto.getContent());
-
-        Post updatePost = postRepository.save(post);
-        return mapToDTO(updatePost);
-    }
-
-    @Override
-    public void deletePostById(long id) {
-        //  Question, why do we need to find it out firstly?
-        Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
-        postRepository.delete(post);
-    }
-
-    @Override
-    public PostResponse getAllPost(int pageNo, int pageSize, String sortBy, String sortDir) {
-
-        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
-                : Sort.by(sortBy).descending();
-
-        // create pageable instance
-
-        PageRequest pageRequest = PageRequest.of(pageNo, pageSize, sort);
-//        PageRequest pageRequest = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
-//        PageRequest pageRequest = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
-        Page<Post> pagePosts = postRepository.findAll(pageRequest);
-
-        // get content for page abject
-        List<Post> posts = pagePosts.getContent();
-        List<PostDto> postDtos = posts.stream().map(post -> mapToDTO(post)).collect(Collectors.toList());
-
-        PostResponse postResponse = new PostResponse();
-        postResponse.setContent(postDtos);
-        postResponse.setPageNo(pagePosts.getNumber());
-        postResponse.setPageSize(pagePosts.getSize());
-        postResponse.setTotalElements(pagePosts.getTotalElements());
-        postResponse.setTotalPages(pagePosts.getTotalPages());
-        postResponse.setLast(pagePosts.isLast());
-        return postResponse;
-    }
+//    @Override
+//    public PostResponse getAllPost(int pageNo, int pageSize, String sortBy, String sortDir) {
+//
+//        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+//                : Sort.by(sortBy).descending();
+//
+//        // create pageable instance
+//
+//        PageRequest pageRequest = PageRequest.of(pageNo, pageSize, sort);
+////        PageRequest pageRequest = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+////        PageRequest pageRequest = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
+//        Page<Post> pagePosts = postRepository.findAll(pageRequest);
+//
+//        // get content for page abject
+//        List<Post> posts = pagePosts.getContent();
+//        List<PostDto> postDtos = posts.stream().map(post -> mapToDTO(post)).collect(Collectors.toList());
+//
+//        PostResponse postResponse = new PostResponse();
+//        postResponse.setContent(postDtos);
+//        postResponse.setPageNo(pagePosts.getNumber());
+//        postResponse.setPageSize(pagePosts.getSize());
+//        postResponse.setTotalElements(pagePosts.getTotalElements());
+//        postResponse.setTotalPages(pagePosts.getTotalPages());
+//        postResponse.setLast(pagePosts.isLast());
+//        return postResponse;
+//    }
 
     private PostDto mapToDTO(Post post) {
         PostDto postDto = new PostDto();

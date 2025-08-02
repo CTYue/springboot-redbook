@@ -1,47 +1,38 @@
 package com.chuwa.redbook.entity;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
+import org.springframework.data.relational.core.mapping.Column;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 
-/**
- * @author b1go
- * @date 8/22/22 6:30 PM
- */
-@Entity
-@Table(
-        name = "posts",
-        uniqueConstraints = {
-             @UniqueConstraint(columnNames = {"title"})
-        }
-)
+@Table("posts") // R2DBC uses @Table from Spring Data
 public class Post {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "title", nullable = false)
+    @Column("title")
     private String title;
 
-    @Column(name = "description", nullable = false)
+    @Column("description")
     private String description;
 
-    @Column(name = "content", nullable = false)
+    @Column("content")
     private String content;
 
-    @CreationTimestamp
+    // You need to handle timestamps manually or with database defaults
+    @Column("create_date_time")
     private LocalDateTime createDateTime;
 
-    @UpdateTimestamp
+    @Column("update_date_time")
     private LocalDateTime updateDateTime;
 
-    public Post() {
-    }
+    // Constructors, getters and setters
+    public Post() {}
 
-    public Post(Long id, String title, String description, String content, LocalDateTime createDateTime, LocalDateTime updateDateTime) {
+    public Post(Long id, String title, String description, String content,
+                LocalDateTime createDateTime, LocalDateTime updateDateTime) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -49,6 +40,8 @@ public class Post {
         this.createDateTime = createDateTime;
         this.updateDateTime = updateDateTime;
     }
+
+    // getters and setters omitted for brevity
 
     public Long getId() {
         return id;
@@ -96,17 +89,5 @@ public class Post {
 
     public void setUpdateDateTime(LocalDateTime updateDateTime) {
         this.updateDateTime = updateDateTime;
-    }
-
-    @Override
-    public String toString() {
-        return "Post{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", content='" + content + '\'' +
-                ", createDateTime=" + createDateTime +
-                ", updateDateTime=" + updateDateTime +
-                '}';
     }
 }
