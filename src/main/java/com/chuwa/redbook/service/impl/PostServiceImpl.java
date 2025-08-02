@@ -1,147 +1,97 @@
 package com.chuwa.redbook.service.impl;
 
-import com.chuwa.redbook.dao.PostRepository;
+import com.chuwa.redbook.dao.ReactivePostRepository;
 import com.chuwa.redbook.entity.Post;
 import com.chuwa.redbook.exception.ResourceNotFoundException;
+import com.chuwa.redbook.exception.ServerInternalException;
 import com.chuwa.redbook.payload.PostDto;
 import com.chuwa.redbook.payload.PostResponse;
 import com.chuwa.redbook.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.net.http.HttpClient;
-import java.util.List;
-import java.util.stream.Collectors;
 
-/**
- * @author b1go
- * @date 8/22/22 6:56 PM
- */
 @Service
 public class PostServiceImpl implements PostService {
 
     @Autowired
-    private PostRepository postRepository;
+    private ReactivePostRepository reactivePostRepository;
 
-    //RestTemplate, HttpClient
-//    HttpClient httpClient = HttpClient.newHttpClient();
-//    RestTemplate restTemplate = new RestTemplate();
-    WebClient webClient = WebClient.create("http://localhost:8080");
-
+    @Override
     public Mono<PostDto> isReady() {
-        try {
-            Thread.sleep(10000);//Call third party API
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-//        doSomethingInSynchronousBlockingMode();
-        return postRepository.findAll().next().map(this::mapToDTO);
+        return reactivePostRepository.findAll().next().map(this::mapToDTO);
     }
 
-//    @Override
-//    public PostDto createPost(PostDto postDto) {
-//        // 把payload转换成entity，这样才能dao去把该数据存到数据库中。
-//        Post post = new Post();
-//        if (postDto.getTitle() != null) {
-//            post.setTitle(postDto.getTitle());
-//        } else {
-//            post.setTitle("");
-//        }
-//        post.setDescription(postDto.getDescription());
-//        post.setContent(postDto.getContent());
-//        // 此时已成功把request body的信息传递给entity
-//
-//        // covert DTO to Entity
-//        post = mapToEntity(postDto);
-//
-//        // 调用Dao的save 方法，将entity的数据存储到数据库MySQL
-//        // save()会返回存储在数据库中的数据
-//        Mono<Post> savedPost = postRepository.save(post);
-//
-//        // 将save() 返回的数据转换成controller/前端 需要的数据，然后return给controller
-//
-//        return mapToDTO(savedPost.block());
-//    }
+    @Override
+    public Mono<PostDto> createPost(PostDto postDto) {
+        Post post = new Post();
+        post.setTitle(postDto.getTitle().isEmpty() ? "No Title" : postDto.getTitle());
+        post.setDescription(postDto.getDescription());
+        post.setContent(postDto.getContent());
+        // covert DTO to Entity
+        post = mapToEntity(postDto);
 
-    /**
-     * 此处练习了lambda， stream API
-     * @return
-     */
-//    @Override
-//    public Flux<PostDto> getAllPost() {
-//         return postRepository.findAll().map(post -> mapToDTO(post)).(System.out::println);
-//    }
+        return reactivePostRepository.save(post).map(this::mapToDTO);
+    }
 
-//    /**
-//     * 此处顺便练习Optional
-//     * @param id
-//     * @return
-//     */
-//    @Override
-//    public PostDto getPostById(long id) {
-////        Optional<Post> post = postRepository.findById(id);
-////        post.orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
-//
-////        Post post = postRepository.findById(id).get();
-//
-//        Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
-//
-//        return mapToDTO(post);
-//    }
 
-//    @Override
-//    public PostDto updatePost(PostDto postDto, long id) {
-//        //  Question, why do we need to find it out firstly?
-//        Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
-//        post.setTitle(postDto.getTitle());
-//        post.setDescription(postDto.getDescription());
-//        post.setContent(postDto.getContent());
-//
-//        Post updatePost = postRepository.save(post);
-//        return mapToDTO(updatePost);
-//    }
+    @Override
+    public Mono<PostDto> getPostById(long id) {
+        return reactivePostRepository.findById(id)
+                .map(post -> mapToDTO(post))
+                .switchIfEmpty(Mono.error(new ResourceNotFoundException("Post", "id", id)));
+    }
 
-//    @Override
-//    public void deletePostById(long id) {
-//        //  Question, why do we need to find it out firstly?
-//        Post post = postRepository.findById(id).switchIfEmpty();
-//                orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
-//        postRepository.delete(post);
-//    }
+    @Override
+    public Mono<PostDto> updatePost(PostDto postDto, long id) {
+        return reactivePostRepository.findById(id)
+                .switchIfEmpty(Mono.error(new ResourceNotFoundException("Post", "id", id)))
+                .flatMap(post -> {
+                    post.setTitle(postDto.getTitle());
+                    post.setDescription(postDto.getDescription());
+                    post.setContent(postDto.getContent());
+                    return reactivePostRepository.save(post);
+                })
+                .onErrorMap(ex -> new ServerInternalException("Failed to update post: " + id))
+                .map(this::mapToDTO);
+    }
 
-//    @Override
-//    public PostResponse getAllPost(int pageNo, int pageSize, String sortBy, String sortDir) {
-//
-//        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
-//                : Sort.by(sortBy).descending();
-//
-//        // create pageable instance
-//
-//        PageRequest pageRequest = PageRequest.of(pageNo, pageSize, sort);
-////        PageRequest pageRequest = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
-////        PageRequest pageRequest = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
-//        Page<Post> pagePosts = postRepository.findAll(pageRequest);
-//
-//        // get content for page abject
-//        List<Post> posts = pagePosts.getContent();
-//        List<PostDto> postDtos = posts.stream().map(post -> mapToDTO(post)).collect(Collectors.toList());
-//
-//        PostResponse postResponse = new PostResponse();
-//        postResponse.setContent(postDtos);
-//        postResponse.setPageNo(pagePosts.getNumber());
-//        postResponse.setPageSize(pagePosts.getSize());
-//        postResponse.setTotalElements(pagePosts.getTotalElements());
-//        postResponse.setTotalPages(pagePosts.getTotalPages());
-//        postResponse.setLast(pagePosts.isLast());
-//        return postResponse;
-//    }
+    @Override
+    public Mono<Void> deletePostById(long id) {
+        return reactivePostRepository.findById(id)
+                .switchIfEmpty(Mono.error(new ResourceNotFoundException("Post", "id", id)))
+                .flatMap(post -> reactivePostRepository.delete(post));
+    }
+
+
+    @Override
+    public Mono<PostResponse> getAllPost(int pageNo, int pageSize, String sortBy, String sortDir) {
+
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        // Pagination
+        return reactivePostRepository.count()
+                .flatMap(totalElements -> reactivePostRepository.findAll()
+                        .skip((long) pageNo * pageSize)
+                        .take(pageSize) // Take the current page
+                        .map(this::mapToDTO)
+                        .collectList()
+                        .map(postDtos -> {
+                            PostResponse postResponse = new PostResponse();
+                            postResponse.setContent(postDtos);
+                            postResponse.setPageNo(pageNo);
+                            postResponse.setPageSize(pageSize);
+                            postResponse.setTotalElements(totalElements);
+                            postResponse.setTotalPages((int) Math.ceil((double) totalElements / pageSize));
+                            postResponse.setLast(pageNo + 1 >= postResponse.getTotalPages());
+                            return postResponse;
+                        })
+                );
+    }
 
     private PostDto mapToDTO(Post post) {
         PostDto postDto = new PostDto();

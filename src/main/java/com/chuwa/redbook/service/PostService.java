@@ -2,35 +2,21 @@ package com.chuwa.redbook.service;
 
 import com.chuwa.redbook.payload.PostDto;
 import com.chuwa.redbook.payload.PostResponse;
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.List;
 
-/**
- * @author b1go
- * @date 8/22/22 6:51 PM
- */
-public interface PostService<T> {
+public interface PostService {
 
-//    PostDto createPost(PostDto postDto);
 
-//    Flux<T> getAllPost();
+    Mono<PostResponse> getAllPost(int pageNo, int pageSize, String sortBy, String sortDir);
 
-//    /**
-//     * 分页
-//     * @param pageNo
-//     * @param pageSize
-//     * @param sortBy
-//     * @param sortDir
-//     * @return
-//     */
-//    PostResponse getAllPost(int pageNo, int pageSize, String sortBy, String sortDir);
+    Mono<PostDto> createPost(PostDto postDto);
 
-//    PostDto getPostById(long id);
-//
-//    PostDto updatePost(PostDto postDto, long id);
-//
-//    void deletePostById(long id);
+    Mono<PostDto> getPostById(long id);
 
-    T isReady();
+    Mono<Void> deletePostById(long id);
+
+    Mono<PostDto> isReady();
+
+    Mono<PostDto> updatePost(PostDto postDto, long id);
 }
