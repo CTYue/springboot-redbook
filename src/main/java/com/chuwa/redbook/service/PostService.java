@@ -19,4 +19,6 @@ public interface PostService {
     Mono<PostDto> isReady();
 
     Mono<PostDto> updatePost(PostDto postDto, long id);
+
+    Mono<String> isLive();
 }

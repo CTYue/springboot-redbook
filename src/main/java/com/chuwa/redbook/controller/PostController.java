@@ -3,13 +3,13 @@ package com.chuwa.redbook.controller;
 import com.chuwa.redbook.payload.PostDto;
 import com.chuwa.redbook.payload.PostResponse;
 import com.chuwa.redbook.service.PostService;
+import com.chuwa.redbook.service.impl.PostServiceImpl;
 import com.chuwa.redbook.util.AppConstants;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import com.chuwa.redbook.exception.*;
 
@@ -27,10 +27,9 @@ public class PostController {
         return (Mono)(postService.isReady());
     }
 
-
     @GetMapping("/liveness")
-    public ResponseEntity isLive() {
-        return new ResponseEntity<>("Readbook application is live", HttpStatus.OK);
+    public Mono<String> isLive() {
+        return postService.isLive();
     }
 
     @PostMapping

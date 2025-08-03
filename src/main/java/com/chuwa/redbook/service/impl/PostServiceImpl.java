@@ -10,6 +10,7 @@ import com.chuwa.redbook.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 
@@ -19,10 +20,27 @@ public class PostServiceImpl implements PostService {
     @Autowired
     private ReactivePostRepository reactivePostRepository;
 
+    private final WebClient webClient;
+
+    @Autowired
+    public PostServiceImpl(WebClient webClient) {
+        this.webClient = webClient;
+    }
+
     @Override
     public Mono<PostDto> isReady() {
         return reactivePostRepository.findAll().next().map(this::mapToDTO);
     }
+
+    public Mono<String> isLive() {
+        return webClient.get()
+                .uri("/citizen/test")   // path relative to baseUrl
+                .retrieve()
+                .bodyToMono(String.class)
+                .doOnNext(resp -> System.out.println("Response: " + resp))
+                .doOnError(err -> System.err.println("Error: " + err.getMessage()));
+    }
+
 
     @Override
     public Mono<PostDto> createPost(PostDto postDto) {
