@@ -7,6 +7,7 @@ import com.chuwa.redbook.exception.ServerInternalException;
 import com.chuwa.redbook.payload.PostDto;
 import com.chuwa.redbook.payload.PostResponse;
 import com.chuwa.redbook.service.PostService;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ public class PostServiceImpl implements PostService {
     private ReactivePostRepository reactivePostRepository;
 
     private final WebClient webClient;
+    private final Logger logger = org.slf4j.LoggerFactory.getLogger(PostServiceImpl.class);
 
     @Autowired
     public PostServiceImpl(WebClient webClient) {
@@ -37,8 +39,8 @@ public class PostServiceImpl implements PostService {
                 .uri("/citizen/test")   // path relative to baseUrl
                 .retrieve()
                 .bodyToMono(String.class)
-                .doOnNext(resp -> System.out.println("Response: " + resp))
-                .doOnError(err -> System.err.println("Error: " + err.getMessage()));
+                .doOnNext(resp -> logger.info("Response: " + resp))
+                .doOnError(err -> logger.error("Error: " + err.getMessage()));
     }
 
 
