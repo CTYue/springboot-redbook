@@ -28,18 +28,18 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostDto createPost(PostDto postDto) {
         // 把payload转换成entity，这样才能dao去把该数据存到数据库中。
-//        Post post = new Post();
-//        if (postDto.getTitle() != null) {
-//            post.setTitle(postDto.getTitle());
-//        } else {
-//            post.setTitle("");
-//        }
-//        post.setDescription(postDto.getDescription());
-//        post.setContent(postDto.getContent());
+        Post post = new Post();
+        if (postDto.getTitle() != null) {
+            post.setTitle(postDto.getTitle());
+        } else {
+            post.setTitle("");
+        }
+        post.setDescription(postDto.getDescription());
+        post.setContent(postDto.getContent());
         // 此时已成功把request body的信息传递给entity
 
         // covert DTO to Entity
-        Post post = mapToEntity(postDto);
+        post = mapToEntity(postDto);
 
         // 调用Dao的save 方法，将entity的数据存储到数据库MySQL
         // save()会返回存储在数据库中的数据
