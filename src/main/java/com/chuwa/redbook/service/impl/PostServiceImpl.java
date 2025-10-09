@@ -8,6 +8,7 @@ import com.chuwa.redbook.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -79,6 +80,14 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
 
         return mapToDTO(post);
+    }
+
+
+    public PostDto getPostByTitle(String title) {
+        List posts = new ArrayList();
+        posts = postRepository.findByTitle("nihao chuwa");
+
+        return mapToDTO((Post)posts.get(0));
     }
 
     @Override
