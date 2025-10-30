@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redbook-app
+  namespace: redbook
+  labels:
+    app: redbook
+    app.kubernetes.io/name: redbook
+    app.kubernetes.io/version: "1.0.0"
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: redbook
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: redbook
+    spec:
+      containers:
+      - name: redbook
+        image: redbook-app:0.0.1-20251029192744
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "256Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+        livenessProbe:
+          httpGet:
+            path: /api/v1/posts/liveness
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /api/v1/posts/readiness
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 3
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "prod"
+        - name: SERVER_PORT
+          value: "8080"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redbook-service
+  namespace: redbook
+  labels:
+    app: redbook
+    app.kubernetes.io/name: redbook-service
+    app.kubernetes.io/version: "1.0.0"
+spec:
+  selector:
+    app: redbook
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 8080
+      nodePort: 30080
+  type: NodePort
+  # If you're using a cloud provider with LoadBalancer support, you can use:
+  # type: LoadBalancer
+  # loadBalancerIP: "" # Optional: specify a static IP if needed
