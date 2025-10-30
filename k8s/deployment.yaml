@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
       - name: redbook
-        image: redbook-app:0.0.1-20251029192744
+        image: redbook-app:latest # update with your image name and VERSION
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
