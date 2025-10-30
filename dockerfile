@@ -1,5 +1,20 @@
-FROM openjdk:latest
+# Base image
+FROM openjdk:17-jdk-slim
+
+# Set working directory
 WORKDIR /app
-COPY ./target/redbook-0.0.1-SNAPSHOT.jar /app/redbook-0.0.1-SNAPSHOT.jar
+
+# Copy the built JAR file (build it locally first)
+COPY target/*.jar app.jar
+
+# Add build information
+ARG BUILD_VERSION=unknown
+ARG BUILD_TIMESTAMP=unknown
+LABEL version="${BUILD_VERSION}" \
+      build-timestamp="${BUILD_TIMESTAMP}"
+
+# Expose port
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","/app/redbook-0.0.1-SNAPSHOT.jar"]
+
+# Run the application
+ENTRYPOINT ["java", "-jar", "app.jar"]

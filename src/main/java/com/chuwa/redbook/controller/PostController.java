@@ -28,11 +28,13 @@ public class PostController {
 
     @GetMapping("/readiness")
     public ResponseEntity<PostDto> isHealthy() {
+        logger.info("Readbook application is healthy");
         return new ResponseEntity<>(postService.isReady(), HttpStatus.OK);
     }
 
     @GetMapping("/liveness")
     public ResponseEntity isLive() {
+        logger.info("Readbook application is live");
         return new ResponseEntity<>("Readbook application is live", HttpStatus.OK);
     }
 
@@ -49,6 +51,7 @@ public class PostController {
             @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
             @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIR, required = false) String sortDir
     ) {
+        logger.info("inside getAllPosts");
         logger.info("pageNo: {}, pageSize: {}, sortBy: {}, sortDir: {}", pageNo, pageSize, sortBy, sortDir);
         return postService.getAllPost(pageNo, pageSize, sortBy, sortDir);
     }
