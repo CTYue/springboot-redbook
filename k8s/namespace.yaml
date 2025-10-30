@@ -4,3 +4,4 @@ metadata:
   name: redbook
   labels:
     name: redbook
+# If you already created redbook namespace, you don't need to run kubectl apply -f ./k8s/namespace.yaml.
