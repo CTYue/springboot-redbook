@@ -185,7 +185,7 @@ See **[MCP_WINDSURF_SETUP.md](MCP_WINDSURF_SETUP.md)** for detailed instructions
          "command": "java",
          "args": [
            "-jar",
-           "/Users/yuzidong/Code/springboot-redbook/target/redbook-0.0.1-SNAPSHOT.jar"
+           "/xxx.../target/redbook-0.0.1-SNAPSHOT.jar"
          ]
        }
      }
