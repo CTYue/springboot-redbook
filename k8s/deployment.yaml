@@ -1,3 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redbook-prometheus-config
+  namespace: redbook
+  labels:
+    app: redbook
+    app.kubernetes.io/name: redbook-prometheus-config
+    app.kubernetes.io/version: "1.0.0"
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+      evaluation_interval: 15s
+
+    scrape_configs:
+      - job_name: redbook-app
+        metrics_path: /actuator/prometheus
+        static_configs:
+          - targets:
+              - 127.0.0.1:8080
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -7,8 +29,9 @@ metadata:
     app: redbook
     app.kubernetes.io/name: redbook
     app.kubernetes.io/version: "1.0.0"
+    mykey: myvalue
 spec:
-  replicas: 4
+  replicas: 10
   selector:
     matchLabels:
       app: redbook
@@ -22,6 +45,10 @@ spec:
       labels:
         app: redbook
     spec:
+      volumes:
+      - name: prometheus-config
+        configMap:
+          name: redbook-prometheus-config
       containers:
       - name: redbook
         image: redbook-app:latest # update with your image name and VERSION
@@ -60,6 +87,30 @@ spec:
           value: "prod"
         - name: SERVER_PORT
           value: "8080"
+      - name: prometheus-scraper
+        image: prom/prometheus:v2.55.1
+        imagePullPolicy: IfNotPresent
+        args:
+        - --config.file=/etc/prometheus/prometheus.yml
+        - --storage.tsdb.path=/prometheus
+        - --web.listen-address=:9090
+        - --web.enable-lifecycle
+        ports:
+        - containerPort: 9090
+          name: prometheus
+          protocol: TCP
+        volumeMounts:
+        - name: prometheus-config
+          mountPath: /etc/prometheus/prometheus.yml
+          subPath: prometheus.yml
+          readOnly: true
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "128Mi"
+          limits:
+            cpu: "200m"
+            memory: "256Mi"
 ---
 apiVersion: v1
 kind: Service
